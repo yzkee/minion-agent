@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/femto-minion-agent-badge.png)](https://mseep.ai/app/femto-minion-agent)
+
 **[![Documentation Status](https://img.shields.io/badge/documentation-brightgreen)](https://github.com/femto/minion-agent) 
 [![Install](https://img.shields.io/badge/get_started-blue)](https://github.com/femto/minion-agent) 
 [![Discord](https://dcbadge.limes.pink/api/server/HUC6xEK9aT?style=flat)](https://discord.gg/HUC6xEK9aT)
