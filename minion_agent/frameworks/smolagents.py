@@ -58,6 +58,14 @@ class SmolagentsAgent(MinionAgent):
             for managed_agent in self.managed_agents:
                 agent_type = managed_agent.agent_type or DEFAULT_AGENT_TYPE
                 managed_tools, _ = await self._load_tools(managed_agent.tools)
+                # agent_args are specific to the framework that builds the agent, so
+                # they are only passed on when this config targets this framework
+                # (framework=None means the same one as the parent).
+                managed_agent_args = (
+                    managed_agent.agent_args or {}
+                    if managed_agent.framework in (None, self.framework)
+                    else {}
+                )
                 managed_agent_instance = agent_type(
                     name=managed_agent.name,
                     model=self._get_model(managed_agent),
@@ -65,6 +73,7 @@ class SmolagentsAgent(MinionAgent):
                     verbosity_level=2,
                     description=managed_agent.description
                     or f"Use the agent: {managed_agent.name}",
+                    **managed_agent_args,
                 )
                 if managed_agent.instructions:
                     managed_agent_instance.prompt_templates["system_prompt"] = (
