@@ -121,6 +121,12 @@ class ExternalMinionAgent(MinionAgent):
                     if managed_agent.framework in (None, self.framework)
                     else {}
                 )
+                # Keys this call passes explicitly win; a duplicate in agent_args would
+                # otherwise raise TypeError (multiple values for a keyword argument).
+                managed_agent_args = {
+                    k: v for k, v in managed_agent_args.items()
+                    if k not in ("name", "model", "tools", "verbosity_level", "description")
+                }
                 managed_agent_instance = agent_type(
                     name=managed_agent.name,
                     model=self._get_model(managed_agent),

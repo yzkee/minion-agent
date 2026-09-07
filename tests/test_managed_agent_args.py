@@ -9,7 +9,9 @@ sub-agent's constructor too.
 import asyncio
 
 import pytest
-from smolagents import CodeAgent
+
+smolagents = pytest.importorskip("smolagents")
+CodeAgent = smolagents.CodeAgent
 
 from minion_agent import AgentConfig, AgentFramework, MinionAgent
 
@@ -81,3 +83,24 @@ def test_agent_args_for_another_framework_are_not_passed_on():
         )
     )
     assert "research_assistant" in agent._agent.managed_agents
+
+
+def test_keys_the_builder_passes_explicitly_do_not_collide():
+    """`agent_args` may name a key the builder also passes (`description`,
+    `verbosity_level`, ...). The builder's value wins and the agent still loads,
+    instead of `TypeError: got multiple values for keyword argument`."""
+    agent = asyncio.run(
+        MinionAgent.create_async(
+            AgentFramework.SMOLAGENTS,
+            _config("supervisor"),
+            managed_agents=[
+                _config(
+                    "worker",
+                    {"max_steps": 3, "description": "ignored", "verbosity_level": 0},
+                )
+            ],
+        )
+    )
+    child = agent._agent.managed_agents["worker"]
+    assert child.max_steps == 3
+    assert child.description != "ignored"
